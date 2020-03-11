@@ -57,7 +57,7 @@ func wrap(fn func() error) (err error) {
 		if r := recover(); r != nil {
 			message := fmt.Sprintf("panicretry: %+v", r)
 			frame := make([]string, 0)
-			for depth := 2; ; depth++ {
+			for depth := 2; depth < 10; depth++ {
 				_, file, line, ok := runtime.Caller(depth)
 				if !ok {
 					break
