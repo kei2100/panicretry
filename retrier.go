@@ -38,13 +38,13 @@ func (r *Retrier) Do(fn func() error) error {
 		if !ok {
 			return err
 		}
+		loggerFunc(perr)
 		if r.MaxRetry == 0 {
 			continue
 		}
 		if r.MaxRetry < attempts {
 			return perr
 		}
-		loggerFunc(perr)
 		attempts++
 	}
 }

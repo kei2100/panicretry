@@ -8,6 +8,12 @@ import (
 	"github.com/kei2100/panicretry"
 )
 
+func init() {
+	panicretry.DefaultLoggerFunc = func(_ error) {
+		// noop
+	}
+}
+
 func ExampleDo() {
 	counter := 0
 	err := panicretry.Do(func() error {
@@ -27,10 +33,6 @@ func ExampleDo() {
 }
 
 func TestRetrier_Do(t *testing.T) {
-	panicretry.DefaultLoggerFunc = func(_ error) {
-		// noop
-	}
-
 	t.Run("panics/infinite retry", func(t *testing.T) {
 		pr := panicretry.Retrier{}
 		counter := 0
