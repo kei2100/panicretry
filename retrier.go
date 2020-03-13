@@ -46,7 +46,7 @@ func (r *Retrier) Do(fn func() error) error {
 			continue
 		}
 		if r.MaxRetry < attempts {
-			return perr
+			panic(perr.message)
 		}
 		attempts++
 	}
@@ -55,7 +55,7 @@ func (r *Retrier) Do(fn func() error) error {
 func wrap(fn func() error) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			message := fmt.Sprintf("panicretry: %+v", r)
+			message := fmt.Sprintf("%+v", r)
 			frame := make([]string, 0)
 			for depth := 2; depth < 10; depth++ {
 				_, file, line, ok := runtime.Caller(depth)
@@ -86,7 +86,7 @@ func (e *panicRetry) Format(s fmt.State, verb rune) {
 	switch verb {
 	case 'v':
 		if s.Flag('+') {
-			fmt.Fprintf(s, "%s\n%s", e.message, strings.Join(e.frame, "\n"))
+			fmt.Fprintf(s, "panicretry: %s\n%s", e.message, strings.Join(e.frame, "\n"))
 			return
 		}
 		fallthrough
